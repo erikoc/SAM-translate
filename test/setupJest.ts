@@ -1,0 +1,16 @@
+import { ILocaleTranslation } from '../types'
+
+global.fetch = require('jest-fetch-mock')
+
+export const locale = 'da-DK'
+export const translatableKey = 'Contract template'
+export const translatableValue = 'Kontrakt type'
+export const tokenKey = 'You have %num1 unread messages and %num2 notifications'
+export const tokenValue = 'Du har %num1 ulæste beskeder og %num2 notifikationer'
+export const nonExistingPhrase = 'This phrase is not translatable'
+
+export let mockTranslations: ILocaleTranslation
+mockTranslations = {}
+mockTranslations[locale] = {}
+mockTranslations[locale][translatableKey] = translatableValue
+mockTranslations[locale][tokenKey] = tokenValue
