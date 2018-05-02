@@ -40,4 +40,4 @@ export declare const exportTranslations: (locale?: string | undefined) => ILocal
  */
 export declare const t: (key: string, replacements?: {
     [Key: string]: string | number;
-} | undefined, locale?: string | undefined) => string;
+} | undefined, context?: string | undefined, locale?: string | undefined) => string;

@@ -84,7 +84,7 @@ exports.exportTranslations = (locale) => {
  * @param replacements optional replacements as key/value object
  * @param locale optional locale to use for translations
  */
-exports.t = (key, replacements, locale) => {
+exports.t = (key, replacements, context, locale) => {
     if (!translations) {
         logError(`No translations were available to client`);
         return key;
@@ -97,15 +97,27 @@ exports.t = (key, replacements, locale) => {
         locale = configuration.locale;
     }
     if (!translations.hasOwnProperty(locale)) {
-        logError(`Missing locale: ${locale} in translations`);
+        logError(`Missing locale: "${locale}" in translations`);
         return key;
     }
-    if (!translations[locale].hasOwnProperty(key)) {
-        logError(`Missing translation for locale: ${locale} with key: ${key}`);
-        return key;
+    let processedKey = context ? `${key}<${context}>` : key;
+    if (!translations[locale].hasOwnProperty(processedKey)) {
+        if (!context) {
+            logError(`Missing translation for locale: "${locale}" with key: "${key}"`);
+            return key;
+        }
+        // If a context was provided, we check if a translation is available for the key without context
+        if (!translations[locale].hasOwnProperty(key)) {
+            logError(`Missing translation for locale: "${locale}" with key: "${key}" and context: "${context}"`);
+            return key;
+        }
+        else {
+            // We found a translation by not using the context
+            logError(`Missing translation for locale: "${locale}" with context: "${context}". However, the translation was found for key: "${key}"`);
+            processedKey = key;
+        }
     }
-    let result = translations[locale][key];
-    // TODO: add check to verify amount of replacements vs. %patterns in result
+    let result = translations[locale][processedKey];
     if (replacements) {
         for (const key in replacements) {
             if (replacements.hasOwnProperty(key)) {

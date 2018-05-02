@@ -6,11 +6,17 @@ import {
   tokenKey,
   translatableKey,
   translatableValue,
+  context,
+  contextValue,
+  noContextKey,
+  noContextValue,
 } from '../test/setupJest'
 
-const customErrorCallback = jest.fn(() => {
-  console.log('customErrorCallback')
+const customErrorCallback = jest.fn(e => {
+  console.log(`error: ${e}`)
 })
+
+let errorCalls = 0
 
 // Translation tests
 
@@ -30,7 +36,8 @@ test('Verify that a valid translation is translated', () => {
 
 test('An invalid translation should return original phrase', () => {
   expect(t(nonExistingPhrase)).toEqual(nonExistingPhrase)
-  expect(customErrorCallback).toHaveBeenCalledTimes(1)
+  errorCalls++
+  expect(customErrorCallback).toHaveBeenCalledTimes(errorCalls)
 })
 
 test('Correctly replaces words in a phrase', () => {
@@ -41,4 +48,25 @@ test('Correctly replaces words in a phrase', () => {
   expect(t(tokenKey, replacements)).toEqual(
     'Du har 4 ulæste beskeder og 3 notifikationer',
   )
+})
+
+test('Prefers translation including context', () => {
+  expect(t(noContextKey, undefined, context)).toEqual(contextValue)
+  expect(t(noContextKey)).toEqual(noContextValue)
+})
+
+test('Fails gracefully if context is missing but key without context is available', () => {
+  expect(t(noContextKey, undefined, 'non existing context')).toEqual(
+    noContextValue,
+  )
+  errorCalls++
+  expect(customErrorCallback).toHaveBeenCalledTimes(errorCalls)
+})
+
+test('An invalid translation should return original phrase also when adding a context', () => {
+  expect(t(nonExistingPhrase, undefined, 'non existing context')).toEqual(
+    nonExistingPhrase,
+  )
+  errorCalls++
+  expect(customErrorCallback).toHaveBeenCalledTimes(errorCalls)
 })
