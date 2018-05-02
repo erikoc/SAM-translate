@@ -15,7 +15,7 @@ const defaultConf = {
  * Inits the configuration parameters and fetches the translations
  * @param conf ITranslateConfig configuration for the library
  */
-exports.init = (conf) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+exports.initTranslations = (conf) => tslib_1.__awaiter(this, void 0, void 0, function* () {
     configuration = Object.assign({}, defaultConf, conf);
     const status = yield exports.fetchTranslations();
     // Default locale to first locale in translations if not set

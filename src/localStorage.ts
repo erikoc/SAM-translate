@@ -1,4 +1,4 @@
-import { ILocaleTranslation } from '../types'
+import { ILocaleTranslation } from './'
 
 const STORAGE_KEY = '__translations__'
 const CACHE_KEY = '__trans_time__'

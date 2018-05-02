@@ -1,5 +1,5 @@
 import { mockResponseOnce } from 'jest-fetch-mock'
-import { exportTranslations, init, t } from '.'
+import { exportTranslations, initTranslations, t, ITranslateConfig } from '.'
 import {
   mockTranslations,
   nonExistingPhrase,
@@ -7,7 +7,6 @@ import {
   translatableKey,
   translatableValue,
 } from '../test/setupJest'
-import { ITranslateConfig } from '../types'
 
 const customErrorCallback = jest.fn(() => {
   console.log('customErrorCallback')
@@ -21,7 +20,7 @@ test('Inits the translation configuration', async () => {
     translationFileUrl: 'mock',
     errorCallback: customErrorCallback,
   }
-  await init(configuration)
+  await initTranslations(configuration)
   expect(exportTranslations()).toEqual(mockTranslations)
 })
 

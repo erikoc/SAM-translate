@@ -4,6 +4,7 @@
     "allowUnreachableCode": false,
     "alwaysStrict": true,
     "outDir": "./dist",
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,

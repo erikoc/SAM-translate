@@ -1,8 +1,27 @@
-import { ILocaleTranslation, ITranslateConfig } from '../types'
 import {
   getTranslationsFromLocalStorage,
   persistTranslationsToLocalStorage,
 } from './localStorage'
+
+export interface ITranslateConfig {
+  translationFileUrl: string
+  errorCallback?: (error: string) => void
+  notify?: boolean
+  notificationEndpoint?: string
+  notificationHeaders?: { [key: string]: string }
+  cache?: boolean
+  cacheExpirationTime?: number
+  useLocalStorage?: boolean
+  locale?: string
+}
+
+export interface ILocaleTranslation {
+  [key: string]: ITranslation
+}
+
+export interface ITranslation {
+  [key: string]: string
+}
 
 let translations: ILocaleTranslation | undefined
 let configuration: ITranslateConfig
@@ -19,7 +38,9 @@ const defaultConf = {
  * Inits the configuration parameters and fetches the translations
  * @param conf ITranslateConfig configuration for the library
  */
-export const init = async (conf: ITranslateConfig): Promise<boolean> => {
+export const initTranslations = async (
+  conf: ITranslateConfig,
+): Promise<boolean> => {
   configuration = {
     ...defaultConf,
     ...conf,
@@ -83,7 +104,9 @@ const getTranslationsFromRemote = async (): Promise<
  * Function for debugging state of translations
  * @param locale Optional locale to only return part of translations
  */
-export const exportTranslations = (locale?: string) => {
+export const exportTranslations = (
+  locale?: string,
+): ILocaleTranslation | ITranslation | undefined => {
   if (!translations) {
     return undefined
   }
