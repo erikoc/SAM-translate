@@ -17,6 +17,9 @@ export interface ILocaleTranslation {
 export interface ITranslation {
     [key: string]: string;
 }
+export interface IReplacement {
+    [Key: string]: string | number;
+}
 /**
  * Inits the configuration parameters and fetches the translations
  * @param conf ITranslateConfig configuration for the library
@@ -32,12 +35,11 @@ export declare const fetchTranslations: () => Promise<boolean>;
  * @param locale Optional locale to only return part of translations
  */
 export declare const exportTranslations: (locale?: string | undefined) => ILocaleTranslation | ITranslation | undefined;
+export declare const getLocales: () => string[] | undefined;
 /**
  * Translates a given phrase using replacements and a locale
  * @param key phrase to translate
  * @param replacements optional replacements as key/value object
  * @param locale optional locale to use for translations
  */
-export declare const t: (key: string, replacements?: {
-    [Key: string]: string | number;
-} | undefined, context?: string | undefined, locale?: string | undefined) => string;
+export declare const t: (key: string, replacements?: IReplacement | undefined, context?: string | undefined, locale?: string | undefined) => string;

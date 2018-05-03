@@ -78,6 +78,12 @@ exports.exportTranslations = (locale) => {
         return translations;
     }
 };
+exports.getLocales = () => {
+    if (translations) {
+        return Object.keys(translations);
+    }
+    return undefined;
+};
 /**
  * Translates a given phrase using replacements and a locale
  * @param key phrase to translate
@@ -87,29 +93,29 @@ exports.exportTranslations = (locale) => {
 exports.t = (key, replacements, context, locale) => {
     if (!translations) {
         logError(`No translations were available to client`);
-        return key;
+        return replaceParams(key, replacements);
     }
     if (!locale) {
         if (!configuration.locale) {
             logError(`No locale specified when looking up key: ${key}`);
-            return key;
+            return replaceParams(key, replacements);
         }
         locale = configuration.locale;
     }
     if (!translations.hasOwnProperty(locale)) {
         logError(`Missing locale: "${locale}" in translations`);
-        return key;
+        return replaceParams(key, replacements);
     }
     let processedKey = context ? `${key}<${context}>` : key;
     if (!translations[locale].hasOwnProperty(processedKey)) {
         if (!context) {
             logError(`Missing translation for locale: "${locale}" with key: "${key}"`);
-            return key;
+            return replaceParams(key, replacements);
         }
         // If a context was provided, we check if a translation is available for the key without context
         if (!translations[locale].hasOwnProperty(key)) {
             logError(`Missing translation for locale: "${locale}" with key: "${key}" and context: "${context}"`);
-            return key;
+            return replaceParams(key, replacements);
         }
         else {
             // We found a translation by not using the context
@@ -118,11 +124,17 @@ exports.t = (key, replacements, context, locale) => {
         }
     }
     let result = translations[locale][processedKey];
-    if (replacements) {
-        for (const key in replacements) {
-            if (replacements.hasOwnProperty(key)) {
-                result = result.replace(`%${key}`, `${replacements[key]}`);
-            }
+    result = replaceParams(result, replacements);
+    return result;
+};
+const replaceParams = (phrase, replacements) => {
+    if (!replacements) {
+        return phrase;
+    }
+    let result = phrase;
+    for (const key in replacements) {
+        if (replacements.hasOwnProperty(key)) {
+            result = result.replace(`%${key}`, `${replacements[key]}`);
         }
     }
     return result;

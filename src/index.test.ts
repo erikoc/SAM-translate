@@ -1,5 +1,11 @@
 import { mockResponseOnce } from 'jest-fetch-mock'
-import { exportTranslations, initTranslations, t, ITranslateConfig } from '.'
+import {
+  exportTranslations,
+  initTranslations,
+  t,
+  ITranslateConfig,
+  getLocales,
+} from '.'
 import {
   mockTranslations,
   nonExistingPhrase,
@@ -10,6 +16,8 @@ import {
   contextValue,
   noContextKey,
   noContextValue,
+  nonExistingTokenPhrase,
+  locale,
 } from '../test/setupJest'
 
 const customErrorCallback = jest.fn(e => {
@@ -69,4 +77,20 @@ test('An invalid translation should return original phrase also when adding a co
   )
   errorCalls++
   expect(customErrorCallback).toHaveBeenCalledTimes(errorCalls)
+})
+
+test('Correctly replaces words in a non existing phrase', () => {
+  const replacements = {
+    num1: 4,
+    num2: '3',
+  }
+  expect(t(nonExistingTokenPhrase, replacements)).toEqual(
+    `You have ${replacements.num1} new contracts with ${
+      replacements.num2
+    } missing options`,
+  )
+})
+
+test('Returns the correct list of locales', () => {
+  expect(getLocales()).toEqual([locale])
 })
