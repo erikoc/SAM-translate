@@ -1,28 +1,34 @@
 import { ILocaleTranslation } from './'
 
 const STORAGE_KEY = '__translations__'
-const CACHE_KEY = '__trans_time__'
+const TIME_KEY = '__trans_time__'
 
 const now = () => Math.round(new Date().getTime() / 1000)
 
-export const persistTranslationsToLocalStorage = (json: ILocaleTranslation) => {
+export const persistTranslationsToLocalStorage = (
+  json: ILocaleTranslation,
+  url: string,
+) => {
   try {
     const serializedData = JSON.stringify(json)
-    localStorage.setItem(STORAGE_KEY, serializedData)
-    localStorage.setItem(CACHE_KEY, `${now()}`)
+    localStorage.setItem(getStorageKey(url), serializedData)
+    localStorage.setItem(getTimeKey(url), `${now()}`)
     return true
   } catch (e) {
     return false
   }
 }
 
-export const getTranslationsFromLocalStorage = (cacheExpiration?: number) => {
+export const getTranslationsFromLocalStorage = (
+  url: string,
+  cacheExpiration?: number,
+) => {
   try {
-    const persistedTranslations = localStorage.getItem(STORAGE_KEY)
+    const persistedTranslations = localStorage.getItem(getStorageKey(url))
     if (persistedTranslations !== null) {
       if (cacheExpiration) {
         try {
-          const persistedTime = localStorage.getItem(CACHE_KEY)
+          const persistedTime = localStorage.getItem(getTimeKey(url))
           const atm = now()
           if (Number(persistedTime) < atm - cacheExpiration) {
             return undefined
@@ -40,3 +46,7 @@ export const getTranslationsFromLocalStorage = (cacheExpiration?: number) => {
     return undefined
   }
 }
+
+const getStorageKey = (url: string) => `${STORAGE_KEY}${url}`
+
+const getTimeKey = (url: string) => `${TIME_KEY}${url}`

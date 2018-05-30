@@ -62,9 +62,16 @@ export const initTranslations = async (
  * Returns true on success, false on error
  */
 export const fetchTranslations = async (): Promise<boolean> => {
-  if (configuration.useLocalStorage) {
+  const {
+    useLocalStorage,
+    translationFileUrl,
+    cache,
+    cacheExpirationTime,
+  } = configuration
+  if (useLocalStorage) {
     translations = getTranslationsFromLocalStorage(
-      configuration.cache ? configuration.cacheExpirationTime : undefined,
+      translationFileUrl,
+      cache ? cacheExpirationTime : undefined,
     )
     if (translations) {
       return true
@@ -85,20 +92,21 @@ export const fetchTranslations = async (): Promise<boolean> => {
 const getTranslationsFromRemote = async (): Promise<
   ILocaleTranslation | undefined
 > => {
+  const { translationFileUrl, useLocalStorage } = configuration
   try {
-    const response = await fetch(configuration.translationFileUrl, {
+    const response = await fetch(translationFileUrl, {
       mode: 'cors',
     })
     const json: ILocaleTranslation = await response.json()
-    if (configuration.useLocalStorage) {
-      persistTranslationsToLocalStorage(json)
+    if (useLocalStorage) {
+      persistTranslationsToLocalStorage(json, translationFileUrl)
     }
     return json
   } catch (error) {
     logError(
-      `Unable to fetch translations from url: ${
-        configuration.translationFileUrl
-      }. Error: ${error.message}`,
+      `Unable to fetch translations from url: ${translationFileUrl}. Error: ${
+        error.message
+      }`,
     )
     return undefined
   }
@@ -180,7 +188,7 @@ export const t = (
   return result
 }
 
-const replaceParams = (phrase: string, replacements?: IReplacement) {
+const replaceParams = (phrase: string, replacements?: IReplacement) => {
   if (!replacements) {
     return phrase
   }
@@ -201,6 +209,9 @@ const replaceParams = (phrase: string, replacements?: IReplacement) {
  * @param error error message
  */
 const logError = (error: string) => {
+  if (!configuration) {
+    return
+  }
   const {
     errorCallback,
     notify,

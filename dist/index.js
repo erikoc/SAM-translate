@@ -29,8 +29,9 @@ exports.initTranslations = (conf) => tslib_1.__awaiter(this, void 0, void 0, fun
  * Returns true on success, false on error
  */
 exports.fetchTranslations = () => tslib_1.__awaiter(this, void 0, void 0, function* () {
-    if (configuration.useLocalStorage) {
-        translations = localStorage_1.getTranslationsFromLocalStorage(configuration.cache ? configuration.cacheExpirationTime : undefined);
+    const { useLocalStorage, translationFileUrl, cache, cacheExpirationTime, } = configuration;
+    if (useLocalStorage) {
+        translations = localStorage_1.getTranslationsFromLocalStorage(translationFileUrl, cache ? cacheExpirationTime : undefined);
         if (translations) {
             return true;
         }
@@ -48,18 +49,19 @@ exports.fetchTranslations = () => tslib_1.__awaiter(this, void 0, void 0, functi
  * local storage if setting is enabled
  */
 const getTranslationsFromRemote = () => tslib_1.__awaiter(this, void 0, void 0, function* () {
+    const { translationFileUrl, useLocalStorage } = configuration;
     try {
-        const response = yield fetch(configuration.translationFileUrl, {
+        const response = yield fetch(translationFileUrl, {
             mode: 'cors',
         });
         const json = yield response.json();
-        if (configuration.useLocalStorage) {
-            localStorage_1.persistTranslationsToLocalStorage(json);
+        if (useLocalStorage) {
+            localStorage_1.persistTranslationsToLocalStorage(json, translationFileUrl);
         }
         return json;
     }
     catch (error) {
-        logError(`Unable to fetch translations from url: ${configuration.translationFileUrl}. Error: ${error.message}`);
+        logError(`Unable to fetch translations from url: ${translationFileUrl}. Error: ${error.message}`);
         return undefined;
     }
 });
@@ -147,6 +149,9 @@ const replaceParams = (phrase, replacements) => {
  * @param error error message
  */
 const logError = (error) => {
+    if (!configuration) {
+        return;
+    }
     const { errorCallback, notify, notificationEndpoint, notificationHeaders, } = configuration;
     if (errorCallback) {
         errorCallback(error);

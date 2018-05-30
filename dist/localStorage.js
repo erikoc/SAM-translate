@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const STORAGE_KEY = '__translations__';
-const CACHE_KEY = '__trans_time__';
+const TIME_KEY = '__trans_time__';
 const now = () => Math.round(new Date().getTime() / 1000);
-exports.persistTranslationsToLocalStorage = (json) => {
+exports.persistTranslationsToLocalStorage = (json, url) => {
     try {
         const serializedData = JSON.stringify(json);
-        localStorage.setItem(STORAGE_KEY, serializedData);
-        localStorage.setItem(CACHE_KEY, `${now()}`);
+        localStorage.setItem(getStorageKey(url), serializedData);
+        localStorage.setItem(getTimeKey(url), `${now()}`);
         return true;
     }
     catch (e) {
         return false;
     }
 };
-exports.getTranslationsFromLocalStorage = (cacheExpiration) => {
+exports.getTranslationsFromLocalStorage = (url, cacheExpiration) => {
     try {
-        const persistedTranslations = localStorage.getItem(STORAGE_KEY);
+        const persistedTranslations = localStorage.getItem(getStorageKey(url));
         if (persistedTranslations !== null) {
             if (cacheExpiration) {
                 try {
-                    const persistedTime = localStorage.getItem(CACHE_KEY);
+                    const persistedTime = localStorage.getItem(getTimeKey(url));
                     const atm = now();
                     if (Number(persistedTime) < atm - cacheExpiration) {
                         return undefined;
@@ -41,3 +41,5 @@ exports.getTranslationsFromLocalStorage = (cacheExpiration) => {
         return undefined;
     }
 };
+const getStorageKey = (url) => `${STORAGE_KEY}${url}`;
+const getTimeKey = (url) => `${TIME_KEY}${url}`;
