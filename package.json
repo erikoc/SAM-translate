@@ -1,6 +1,6 @@
 {
   "name": "sam-translate",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Handles fetching translations, looking up individual translations, and error reporting of missing translations",
   "author": "Omnicar A/S",
   "license": "MIT",
@@ -20,7 +20,8 @@
   "scripts": {
     "test": "jest",
     "test-watch": "jest --watchAll",
-    "tsc": "node node_modules/typescript/bin/tsc -p ./tsconfig.json -w"
+    "tsc": "node node_modules/typescript/bin/tsc -p ./tsconfig.json -w",
+    "tsc-once": "node node_modules/typescript/bin/tsc -p ./tsconfig.json"
   },
   "jest": {
     "transform": {

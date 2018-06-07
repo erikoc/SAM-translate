@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const STORAGE_KEY = '__translations__';
-const TIME_KEY = '__trans_time__';
-const now = () => Math.round(new Date().getTime() / 1000);
-exports.persistTranslationsToLocalStorage = (json, url) => {
+var STORAGE_KEY = '__translations__';
+var TIME_KEY = '__trans_time__';
+var now = function () { return Math.round(new Date().getTime() / 1000); };
+exports.persistTranslationsToLocalStorage = function (json, url) {
     try {
-        const serializedData = JSON.stringify(json);
+        var serializedData = JSON.stringify(json);
         localStorage.setItem(getStorageKey(url), serializedData);
-        localStorage.setItem(getTimeKey(url), `${now()}`);
+        localStorage.setItem(getTimeKey(url), "" + now());
         return true;
     }
     catch (e) {
         return false;
     }
 };
-exports.getTranslationsFromLocalStorage = (url, cacheExpiration) => {
+exports.getTranslationsFromLocalStorage = function (url, cacheExpiration) {
     try {
-        const persistedTranslations = localStorage.getItem(getStorageKey(url));
+        var persistedTranslations = localStorage.getItem(getStorageKey(url));
         if (persistedTranslations !== null) {
             if (cacheExpiration) {
                 try {
-                    const persistedTime = localStorage.getItem(getTimeKey(url));
-                    const atm = now();
+                    var persistedTime = localStorage.getItem(getTimeKey(url));
+                    var atm = now();
                     if (Number(persistedTime) < atm - cacheExpiration) {
                         return undefined;
                     }
@@ -41,5 +41,5 @@ exports.getTranslationsFromLocalStorage = (url, cacheExpiration) => {
         return undefined;
     }
 };
-const getStorageKey = (url) => `${STORAGE_KEY}${url}`;
-const getTimeKey = (url) => `${TIME_KEY}${url}`;
+var getStorageKey = function (url) { return "" + STORAGE_KEY + url; };
+var getTimeKey = function (url) { return "" + TIME_KEY + url; };
