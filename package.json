@@ -1,6 +1,6 @@
 {
   "name": "sam-translate",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Handles fetching translations, looking up individual translations, and error reporting of missing translations",
   "author": "Omnicar A/S",
   "license": "MIT",
