@@ -5,6 +5,8 @@ import {
   t,
   ITranslateConfig,
   getLocales,
+  setLocale,
+  getLocale,
 } from '.'
 import {
   mockTranslations,
@@ -28,7 +30,17 @@ let errorCalls = 0
 
 // Translation tests
 
-test('Inits the translation configuration', async () => {
+test('Inits the translation configuration directly', async () => {
+  const configuration: ITranslateConfig = {
+    translationFileUrl: 'mock',
+    errorCallback: customErrorCallback,
+    translations: mockTranslations,
+  }
+  await initTranslations(configuration)
+  expect(exportTranslations()).toEqual(mockTranslations)
+})
+
+test('Inits the translation configuration from mock url', async () => {
   mockResponseOnce(JSON.stringify(mockTranslations))
   const configuration: ITranslateConfig = {
     translationFileUrl: 'mock',
@@ -93,4 +105,14 @@ test('Correctly replaces words in a non existing phrase', () => {
 
 test('Returns the correct list of locales', () => {
   expect(getLocales()).toEqual([locale])
+})
+
+test('Changes the locale correctly', () => {
+  expect(setLocale('da-DK')).toBe(true)
+  expect(getLocale()).toEqual('da-DK')
+})
+
+test('Fails to set the locale to an unkown locale', () => {
+  expect(setLocale('nk-NO')).toBe(false)
+  expect(getLocale()).not.toEqual('nk-NO')
 })

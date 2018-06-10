@@ -5,6 +5,7 @@ import {
 
 export interface ITranslateConfig {
   translationFileUrl: string
+  translations?: ILocaleTranslation
   errorCallback?: (error: string) => void
   notify?: boolean
   notificationEndpoint?: string
@@ -49,7 +50,14 @@ export const initTranslations = async (
     ...defaultConf,
     ...conf,
   }
-  const status = await fetchTranslations()
+  let status = false
+  // If mock/prepared translations are available, use those
+  if (conf.translations) {
+    translations = conf.translations
+    status = true
+  } else {
+    status = await fetchTranslations()
+  }
   // Default locale to first locale in translations if not set
   if (status && !configuration.locale && translations) {
     configuration.locale = Object.keys(translations)[0]
@@ -136,6 +144,28 @@ export const getLocales = () => {
   return undefined
 }
 
+export const setLocale = (locale: string) => {
+  const locales = getLocales()
+  if (!locales) {
+    logError(
+      `Unable to set locale with locale: ${locale}. No locales available`,
+    )
+    return false
+  }
+  if (!locales.find(l => l === locale)) {
+    logError(
+      `Unable to set locale with locale: ${locale}. Locale not available`,
+    )
+    return false
+  }
+  configuration.locale = locale
+  return true
+}
+
+export const getConfiguration = () => configuration
+
+export const getLocale = () =>
+  configuration ? configuration.locale : undefined
 /**
  * Translates a given phrase using replacements and a locale
  * @param key phrase to translate
