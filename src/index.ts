@@ -30,6 +30,7 @@ export interface IReplacement {
 
 let translations: ILocaleTranslation | undefined
 let configuration: ITranslateConfig
+let reportedMissingTranslations: Set<string> = new Set<string>()
 
 const defaultConf = {
   errorCallback: alert.bind(window),
@@ -242,39 +243,44 @@ const logError = (error: string) => {
   if (!configuration) {
     return
   }
-  const {
-    errorCallback,
-    notify,
-    notificationEndpoint,
-    notificationHeaders,
-  } = configuration
+  const { errorCallback, notify, notificationEndpoint } = configuration
   if (errorCallback) {
     errorCallback(error)
   }
   if (notify && notificationEndpoint) {
-    const body = {
-      url: window.location,
-      time: new Date().toUTCString(),
-      configuration,
-      error,
-    }
-    const headers = new Headers()
-    headers.append('Accept', 'application/json')
-    headers.append('Content-Type', 'application/json')
-    // Add extra headers if available
-    if (notificationHeaders) {
-      for (const key in notificationHeaders) {
-        if (notificationHeaders.hasOwnProperty(key)) {
-          const value = notificationHeaders[key]
-          headers.append(key, value)
-        }
+    reportMissingTranslation(error)
+  }
+}
+
+const reportMissingTranslation = (error: string) => {
+  if (reportedMissingTranslations.has(error)) {
+    // Only report every missing translation once
+    return
+  }
+  const { notificationHeaders, notificationEndpoint } = configuration
+  const body = {
+    url: window.location,
+    time: new Date().toUTCString(),
+    configuration,
+    error,
+  }
+  const headers = new Headers()
+  headers.append('Accept', 'application/json')
+  headers.append('Content-Type', 'application/json')
+  // Add extra headers if available
+  if (notificationHeaders) {
+    for (const key in notificationHeaders) {
+      if (notificationHeaders.hasOwnProperty(key)) {
+        const value = notificationHeaders[key]
+        headers.append(key, value)
       }
     }
-    const params: RequestInit = {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    }
-    fetch(notificationEndpoint, params)
   }
+  const params: RequestInit = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }
+  fetch(notificationEndpoint, params)
+  reportedMissingTranslations.add(error)
 }
