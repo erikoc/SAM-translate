@@ -29,16 +29,15 @@ export interface IReplacement {
 }
 
 let translations: ILocaleTranslation | undefined
-let configuration: ITranslateConfig
-let reportedMissingTranslations: Set<string> = new Set<string>()
-
-const defaultConf = {
+let configuration: ITranslateConfig = {
+  translationFileUrl: '',
   errorCallback: alert.bind(window),
   notify: false,
   useLocalStorage: true,
   cache: true,
   cacheExpirationTime: 60 * 60, // 1 hour
 }
+let reportedMissingTranslations: Set<string> = new Set<string>()
 
 /**
  * Inits the configuration parameters and fetches the translations
@@ -48,13 +47,13 @@ export const initTranslations = async (
   conf: ITranslateConfig,
 ): Promise<boolean> => {
   configuration = {
-    ...defaultConf,
+    ...configuration,
     ...conf,
   }
   let status = false
   // If mock/prepared translations are available, use those
-  if (conf.translations) {
-    translations = conf.translations
+  if (configuration.translations) {
+    translations = configuration.translations
     status = true
   } else {
     status = await fetchTranslations()

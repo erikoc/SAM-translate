@@ -4,14 +4,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var localStorage_1 = require("./localStorage");
 var translations;
-var configuration;
-var defaultConf = {
+var configuration = {
+    translationFileUrl: '',
     errorCallback: alert.bind(window),
     notify: false,
     useLocalStorage: true,
     cache: true,
     cacheExpirationTime: 60 * 60,
 };
+var reportedMissingTranslations = new Set();
 /**
  * Inits the configuration parameters and fetches the translations
  * @param conf ITranslateConfig configuration for the library
@@ -21,10 +22,10 @@ exports.initTranslations = function (conf) { return tslib_1.__awaiter(_this, voi
     return tslib_1.__generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                configuration = tslib_1.__assign({}, defaultConf, conf);
+                configuration = tslib_1.__assign({}, configuration, conf);
                 status = false;
-                if (!conf.translations) return [3 /*break*/, 1];
-                translations = conf.translations;
+                if (!configuration.translations) return [3 /*break*/, 1];
+                translations = configuration.translations;
                 status = true;
                 return [3 /*break*/, 3];
             case 1: return [4 /*yield*/, exports.fetchTranslations()];
@@ -206,34 +207,43 @@ var logError = function (error) {
     if (!configuration) {
         return;
     }
-    var errorCallback = configuration.errorCallback, notify = configuration.notify, notificationEndpoint = configuration.notificationEndpoint, notificationHeaders = configuration.notificationHeaders;
+    var errorCallback = configuration.errorCallback, notify = configuration.notify, notificationEndpoint = configuration.notificationEndpoint;
     if (errorCallback) {
         errorCallback(error);
     }
     if (notify && notificationEndpoint) {
-        var body = {
-            url: window.location,
-            time: new Date().toUTCString(),
-            configuration: configuration,
-            error: error,
-        };
-        var headers = new Headers();
-        headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
-        // Add extra headers if available
-        if (notificationHeaders) {
-            for (var key in notificationHeaders) {
-                if (notificationHeaders.hasOwnProperty(key)) {
-                    var value = notificationHeaders[key];
-                    headers.append(key, value);
-                }
+        reportMissingTranslation(error);
+    }
+};
+var reportMissingTranslation = function (error) {
+    if (reportedMissingTranslations.has(error)) {
+        // Only report every missing translation once
+        return;
+    }
+    var notificationHeaders = configuration.notificationHeaders, notificationEndpoint = configuration.notificationEndpoint;
+    var body = {
+        url: window.location,
+        time: new Date().toUTCString(),
+        configuration: configuration,
+        error: error,
+    };
+    var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    headers.append('Content-Type', 'application/json');
+    // Add extra headers if available
+    if (notificationHeaders) {
+        for (var key in notificationHeaders) {
+            if (notificationHeaders.hasOwnProperty(key)) {
+                var value = notificationHeaders[key];
+                headers.append(key, value);
             }
         }
-        var params = {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(body),
-        };
-        fetch(notificationEndpoint, params);
     }
+    var params = {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body),
+    };
+    fetch(notificationEndpoint, params);
+    reportedMissingTranslations.add(error);
 };
