@@ -1,5 +1,6 @@
 export interface ITranslateConfig {
     translationFileUrl: string;
+    translations?: ILocaleTranslation;
     errorCallback?: (error: string) => void;
     notify?: boolean;
     notificationEndpoint?: string;
@@ -36,6 +37,9 @@ export declare const fetchTranslations: () => Promise<boolean>;
  */
 export declare const exportTranslations: (locale?: string | undefined) => ILocaleTranslation | ITranslation | undefined;
 export declare const getLocales: () => string[] | undefined;
+export declare const setLocale: (locale: string) => boolean;
+export declare const getConfiguration: () => ITranslateConfig;
+export declare const getLocale: () => string | undefined;
 /**
  * Translates a given phrase using replacements and a locale
  * @param key phrase to translate

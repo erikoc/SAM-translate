@@ -5,6 +5,7 @@ import {
 
 export interface ITranslateConfig {
   translationFileUrl: string
+  translations?: ILocaleTranslation
   errorCallback?: (error: string) => void
   notify?: boolean
   notificationEndpoint?: string
@@ -29,6 +30,7 @@ export interface IReplacement {
 
 let translations: ILocaleTranslation | undefined
 let configuration: ITranslateConfig
+let reportedMissingTranslations: Set<string> = new Set<string>()
 
 const defaultConf = {
   errorCallback: alert.bind(window),
@@ -49,7 +51,14 @@ export const initTranslations = async (
     ...defaultConf,
     ...conf,
   }
-  const status = await fetchTranslations()
+  let status = false
+  // If mock/prepared translations are available, use those
+  if (conf.translations) {
+    translations = conf.translations
+    status = true
+  } else {
+    status = await fetchTranslations()
+  }
   // Default locale to first locale in translations if not set
   if (status && !configuration.locale && translations) {
     configuration.locale = Object.keys(translations)[0]
@@ -136,6 +145,28 @@ export const getLocales = () => {
   return undefined
 }
 
+export const setLocale = (locale: string) => {
+  const locales = getLocales()
+  if (!locales) {
+    logError(
+      `Unable to set locale with locale: ${locale}. No locales available`,
+    )
+    return false
+  }
+  if (!locales.find(l => l === locale)) {
+    logError(
+      `Unable to set locale with locale: ${locale}. Locale not available`,
+    )
+    return false
+  }
+  configuration.locale = locale
+  return true
+}
+
+export const getConfiguration = () => configuration
+
+export const getLocale = () =>
+  configuration ? configuration.locale : undefined
 /**
  * Translates a given phrase using replacements and a locale
  * @param key phrase to translate
@@ -212,39 +243,44 @@ const logError = (error: string) => {
   if (!configuration) {
     return
   }
-  const {
-    errorCallback,
-    notify,
-    notificationEndpoint,
-    notificationHeaders,
-  } = configuration
+  const { errorCallback, notify, notificationEndpoint } = configuration
   if (errorCallback) {
     errorCallback(error)
   }
   if (notify && notificationEndpoint) {
-    const body = {
-      url: window.location,
-      time: new Date().toUTCString(),
-      configuration,
-      error,
-    }
-    const headers = new Headers()
-    headers.append('Accept', 'application/json')
-    headers.append('Content-Type', 'application/json')
-    // Add extra headers if available
-    if (notificationHeaders) {
-      for (const key in notificationHeaders) {
-        if (notificationHeaders.hasOwnProperty(key)) {
-          const value = notificationHeaders[key]
-          headers.append(key, value)
-        }
+    reportMissingTranslation(error)
+  }
+}
+
+const reportMissingTranslation = (error: string) => {
+  if (reportedMissingTranslations.has(error)) {
+    // Only report every missing translation once
+    return
+  }
+  const { notificationHeaders, notificationEndpoint } = configuration
+  const body = {
+    url: window.location,
+    time: new Date().toUTCString(),
+    configuration,
+    error,
+  }
+  const headers = new Headers()
+  headers.append('Accept', 'application/json')
+  headers.append('Content-Type', 'application/json')
+  // Add extra headers if available
+  if (notificationHeaders) {
+    for (const key in notificationHeaders) {
+      if (notificationHeaders.hasOwnProperty(key)) {
+        const value = notificationHeaders[key]
+        headers.append(key, value)
       }
     }
-    const params: RequestInit = {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    }
-    fetch(notificationEndpoint, params)
   }
+  const params: RequestInit = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  }
+  fetch(notificationEndpoint, params)
+  reportedMissingTranslations.add(error)
 }

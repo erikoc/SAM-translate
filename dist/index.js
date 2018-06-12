@@ -22,11 +22,16 @@ exports.initTranslations = function (conf) { return tslib_1.__awaiter(_this, voi
         switch (_a.label) {
             case 0:
                 configuration = tslib_1.__assign({}, defaultConf, conf);
-                return [4 /*yield*/, exports.fetchTranslations()
-                    // Default locale to first locale in translations if not set
-                ];
-            case 1:
+                status = false;
+                if (!conf.translations) return [3 /*break*/, 1];
+                translations = conf.translations;
+                status = true;
+                return [3 /*break*/, 3];
+            case 1: return [4 /*yield*/, exports.fetchTranslations()];
+            case 2:
                 status = _a.sent();
+                _a.label = 3;
+            case 3:
                 // Default locale to first locale in translations if not set
                 if (status && !configuration.locale && translations) {
                     configuration.locale = Object.keys(translations)[0];
@@ -117,6 +122,23 @@ exports.getLocales = function () {
         return Object.keys(translations);
     }
     return undefined;
+};
+exports.setLocale = function (locale) {
+    var locales = exports.getLocales();
+    if (!locales) {
+        logError("Unable to set locale with locale: " + locale + ". No locales available");
+        return false;
+    }
+    if (!locales.find(function (l) { return l === locale; })) {
+        logError("Unable to set locale with locale: " + locale + ". Locale not available");
+        return false;
+    }
+    configuration.locale = locale;
+    return true;
+};
+exports.getConfiguration = function () { return configuration; };
+exports.getLocale = function () {
+    return configuration ? configuration.locale : undefined;
 };
 /**
  * Translates a given phrase using replacements and a locale
