@@ -1,3 +1,4 @@
+import { IsoLocale } from 'sam-types';
 export interface ITranslateConfig {
     translationFileUrl: string;
     translations?: ILocaleTranslation;
@@ -10,7 +11,7 @@ export interface ITranslateConfig {
     cache?: boolean;
     cacheExpirationTime?: number;
     useLocalStorage?: boolean;
-    locale?: string;
+    locale?: IsoLocale;
 }
 export interface ILocaleTranslation {
     [key: string]: ITranslation;
@@ -39,7 +40,7 @@ export declare const exportTranslations: (locale?: string | undefined) => ILocal
 export declare const getLocales: () => string[] | undefined;
 export declare const setLocale: (locale: string) => boolean;
 export declare const getConfiguration: () => ITranslateConfig;
-export declare const getLocale: () => string | undefined;
+export declare const getLocale: () => "da-DK" | "sv-SE" | undefined;
 /**
  * Translates a given phrase using replacements and a locale
  * @param key phrase to translate
