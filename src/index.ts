@@ -2,6 +2,7 @@ import {
   getTranslationsFromLocalStorage,
   persistTranslationsToLocalStorage,
 } from './localStorage'
+import { IsoLocale } from 'sam-types'
 
 export interface ITranslateConfig {
   translationFileUrl: string
@@ -13,7 +14,7 @@ export interface ITranslateConfig {
   cache?: boolean
   cacheExpirationTime?: number
   useLocalStorage?: boolean
-  locale?: string
+  locale?: IsoLocale
 }
 
 export interface ILocaleTranslation {
@@ -60,7 +61,7 @@ export const initTranslations = async (
   }
   // Default locale to first locale in translations if not set
   if (status && !configuration.locale && translations) {
-    configuration.locale = Object.keys(translations)[0]
+    configuration.locale = Object.keys(translations)[0] as IsoLocale
   }
   return status
 }
@@ -158,7 +159,7 @@ export const setLocale = (locale: string) => {
     )
     return false
   }
-  configuration.locale = locale
+  configuration.locale = locale as IsoLocale
   return true
 }
 
