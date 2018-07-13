@@ -16,6 +16,10 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@omnicar/sam-types@0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@omnicar/sam-types/-/sam-types-0.0.39.tgz#56039f188c3bc1dee76f5714acdc6f1a64eea231"
+
 "@types/jest@^22.2.3":
   version "22.2.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
@@ -2738,10 +2742,6 @@ safe-regex@^1.1.0:
 safer-buffer@^2.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
-
-sam-types@omnicar/sam-types#0.0.33:
-  version "0.0.1"
-  resolved "https://codeload.github.com/omnicar/sam-types/tar.gz/cebb8937edcb30b7913982151ffeb0e6aca028e8"
 
 sane@^2.0.0:
   version "2.5.0"

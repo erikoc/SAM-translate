@@ -2,7 +2,7 @@ import {
   getTranslationsFromLocalStorage,
   persistTranslationsToLocalStorage,
 } from './localStorage'
-import { IsoLocale } from 'sam-types'
+import { IsoLocale } from '@omnicar/sam-types'
 
 export interface ITranslateConfig {
   translationFileUrl: string
