@@ -1,4 +1,7 @@
 # SAM-translate
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/OmniCar/SAM-translate.svg)](https://greenkeeper.io/)
+
 Client js library for fetching translations in a given format (see `ILocaleTranslation`), translating strings, and reporting issues when found.
 
 ## Installation (for development)
