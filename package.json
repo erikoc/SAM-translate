@@ -7,14 +7,14 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "devDependencies": {
-    "@types/jest": "^22.2.3",
-    "@types/node": "^10.0.0",
-    "jest": "^22.4.3",
-    "jest-fetch-mock": "^1.5.0",
-    "jest-localstorage-mock": "^2.2.0",
-    "ts-jest": "^22.4.4",
-    "tslib": "^1.9.0",
-    "typescript": "^2.8.3",
+    "@types/jest": "22.2.3",
+    "@types/node": "10.0.0",
+    "jest": "22.4.3",
+    "jest-fetch-mock": "1.5.0",
+    "jest-localstorage-mock": "2.2.0",
+    "ts-jest": "22.4.4",
+    "tslib": "1.9.0",
+    "typescript": "2.8.3",
     "@omnicar/sam-types": "0.0.39"
   },
   "scripts": {
