@@ -9,7 +9,7 @@
   "devDependencies": {
     "@types/jest": "22.2.3",
     "@types/node": "10.0.0",
-    "jest": "22.4.4",
+    "jest": "23.6.0",
     "jest-fetch-mock": "1.5.0",
     "jest-localstorage-mock": "2.3.0",
     "ts-jest": "22.4.4",
