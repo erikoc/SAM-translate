@@ -8,9 +8,6 @@ export interface ITranslateConfig {
   translationFileUrl: string
   translations?: ILocaleTranslation
   errorCallback?: (error: string) => void
-  notify?: boolean
-  notificationEndpoint?: string
-  notificationHeaders?: { [key: string]: string }
   cache?: boolean
   cacheExpirationTime?: number
   useLocalStorage?: boolean
@@ -33,7 +30,6 @@ let translations: ILocaleTranslation | undefined
 let configuration: ITranslateConfig = {
   translationFileUrl: '',
   errorCallback: alert.bind(window),
-  notify: false,
   useLocalStorage: true,
   cache: true,
   cacheExpirationTime: 60 * 60, // 1 hour
@@ -243,44 +239,9 @@ const logError = (error: string) => {
   if (!configuration) {
     return
   }
-  const { errorCallback, notify, notificationEndpoint } = configuration
+  const { errorCallback } = configuration
   if (errorCallback) {
     errorCallback(error)
   }
-  if (notify && notificationEndpoint) {
-    reportMissingTranslation(error)
-  }
-}
-
-const reportMissingTranslation = (error: string) => {
-  if (reportedMissingTranslations.has(error)) {
-    // Only report every missing translation once
-    return
-  }
-  const { notificationHeaders, notificationEndpoint } = configuration
-  const body = {
-    url: window.location,
-    time: new Date().toUTCString(),
-    configuration,
-    error,
-  }
-  const headers = new Headers()
-  headers.append('Accept', 'application/json')
-  headers.append('Content-Type', 'application/json')
-  // Add extra headers if available
-  if (notificationHeaders) {
-    for (const key in notificationHeaders) {
-      if (notificationHeaders.hasOwnProperty(key)) {
-        const value = notificationHeaders[key]
-        headers.append(key, value)
-      }
-    }
-  }
-  const params: RequestInit = {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
-  }
-  fetch(notificationEndpoint, params)
   reportedMissingTranslations.add(error)
 }
