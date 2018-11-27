@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@omnicar/sam-types@0.0.108":
-  version "0.0.108"
-  resolved "https://registry.yarnpkg.com/@omnicar/sam-types/-/sam-types-0.0.108.tgz#94ba03105b9ec42aa99d76aa963e45729f44dba5"
-  integrity sha512-W0Mq5SX2a6NLQrCsWLQcCIuFVdbRhhVz0K3EWSfZeLWLpA3tTOHvVfYoYnGvNq+iiTgV+P8ra5hfbmNSNZYi+Q==
+"@omnicar/sam-types@0.0.114":
+  version "0.0.114"
+  resolved "https://registry.yarnpkg.com/@omnicar/sam-types/-/sam-types-0.0.114.tgz#8ce27115d768744cd0a3dfd482e0ce504fa81d2d"
+  integrity sha512-rjADinm/BUhHkyjVTHkVfIYWcgtXnnwF5oOqicjDdsnJFtC4KR4XyRnuwMtIyvV5Ad86B26nm3mIah4eaS9ToA==
 
 "@types/jest@23.3.7":
   version "23.3.7"
