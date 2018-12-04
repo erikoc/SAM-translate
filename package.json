@@ -8,7 +8,7 @@
   "typings": "./dist/index.d.ts",
   "devDependencies": {
     "@types/jest": "23.3.7",
-    "@types/node": "10.12.11",
+    "@types/node": "10.12.12",
     "jest": "23.6.0",
     "jest-fetch-mock": "2.0.0",
     "jest-localstorage-mock": "2.3.0",
