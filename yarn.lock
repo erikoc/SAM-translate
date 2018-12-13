@@ -23,10 +23,10 @@
   resolved "https://registry.yarnpkg.com/@omnicar/sam-types/-/sam-types-0.0.114.tgz#8ce27115d768744cd0a3dfd482e0ce504fa81d2d"
   integrity sha512-rjADinm/BUhHkyjVTHkVfIYWcgtXnnwF5oOqicjDdsnJFtC4KR4XyRnuwMtIyvV5Ad86B26nm3mIah4eaS9ToA==
 
-"@types/jest@23.3.7":
-  version "23.3.7"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.7.tgz#77f9a4332ccf8db680a31818ade3ee454c831a79"
-  integrity sha512-N0p6mHrS0RHC3A9hHN4QH1RM2fGSb2E8rt6ONEK5xKSnyKtn/JAhr1VritkCn6cdyDBephVB80THqJGWzK8FAw==
+"@types/jest@23.3.10":
+  version "23.3.10"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.10.tgz#4897974cc317bf99d4fe6af1efa15957fa9c94de"
+  integrity sha512-DC8xTuW/6TYgvEg3HEXS7cu9OijFqprVDXXiOcdOKZCU/5PJNLZU37VVvmZHdtMiGOa8wAA/We+JzbdxFzQTRQ==
 
 "@types/node@10.12.12":
   version "10.12.12"
