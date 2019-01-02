@@ -176,7 +176,6 @@ export const t = (
   locale?: string,
 ) => {
   if (!translations) {
-    logError(`No translations were available to client`)
     return replaceParams(key, replacements)
   }
   if (!locale) {
